@@ -333,9 +333,9 @@ class MinesweeperWindow(QMainWindow):
         for y in range(1, MS_SIZE):
             do_button(0, y, "green", gen_string(bit_counter_up[y-1]))
 
-        for y in range(2, MS_SIZE):
-            for x in range(2, MS_SIZE):
-                if bit_img[y-2][x-2] == 0:
+        for y in range(1, MS_SIZE):
+            for x in range(1, MS_SIZE):
+                if bit_img[y-1][x-1] == 1:
                     do_button(x, y, "black", "o")
 
 
