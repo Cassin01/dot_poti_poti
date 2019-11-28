@@ -329,9 +329,9 @@ class MinesweeperWindow(QMainWindow):
             return ' '.join(list(map(str, nums)))
 
         for x in range(1, MS_SIZE):
-            do_button(x, 0, "green", gen_string(bit_counter_side[x-1]))
+            do_button(x, 0, "green", gen_string(bit_counter_up[x-1]))
         for y in range(1, MS_SIZE):
-            do_button(0, y, "green", gen_string(bit_counter_up[y-1]))
+            do_button(0, y, "green", gen_string(bit_counter_side[y-1]))
 
         for y in range(1, MS_SIZE):
             for x in range(1, MS_SIZE):
