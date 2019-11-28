@@ -8,8 +8,9 @@ import cv2
 import numpy as np
 from mods import image_processer
 
-MS_SIZE = 8  # ゲームボードのサイズ
+MS_SIZE = 30  # ゲームボードのサイズ
 CLOSE, OPEN, FLAG = 0, 1, 2
+
 
 class Game:
     def __init__(self, number_of_mines=10):
@@ -314,11 +315,23 @@ class MinesweeperWindow(QMainWindow):
         if cv_img is None:
             return
 
-        bit_img = image_processer.makeillust_size(cv_img, 30, 30)
-        side = image_processer.count(bit_img)
-        up = image_processer.count(bit_img.T)
-        print("side: ", side)
-        print("up: ", up)
+        bit_img = image_processer.makeillust_size(cv_img, MS_SIZE-1, MS_SIZE-1)
+        bit_counter_side = image_processer.count(bit_img)
+        bit_counter_up = image_processer.count(bit_img.T)
+        print("side: ", bit_counter_side)
+        print("up: ", bit_counter_up)
+
+        def do_button(index_x, index_y, color, text):
+            self.buttons[index_y][index_x].setText(text)
+            self.buttons[index_y][index_x].set_bg_color(color)
+
+        def gen_string(nums):
+            return ' '.join(list(map(str, nums)))
+
+        for x in range(1, MS_SIZE):
+            do_button(x, 0, "green", gen_string(bit_counter_side[x-1]))
+        for y in range(1, MS_SIZE):
+            do_button(0, y, "green", gen_string(bit_counter_up[y-1]))
 
 
 def main():
