@@ -23,45 +23,55 @@ class Game:
         game_board[][] -- 盤面 (0: CLOSE(初期状態), 1: 開いた状態, 2: フラグ)
         """
 
-        self.init_game_board()
-        self.init_mine_map(number_of_mines)
-        self.count_mines()
+        self.init_make_game_board()
+        #self.count_mines()
 
-    def init_game_board(self):
+    def init_make_game_board(self):
         """ ゲーム盤を初期化 """
-        # <-- (STEP 1) ここにコードを追加
+        "最初に表示するゲーム盤を作成する"
+        #塗り絵をする部分　全てCLOSE 大きさは (MS_SIZE-1)
         self.game_board = \
-            [[CLOSE for _ in range(MS_SIZE)] for _ in range(MS_SIZE)]
+            [[CLOSE for _ in range(MS_SIZE-1)] for _ in range(MS_SIZE-1)]
 
-    def init_mine_map(self, number_of_mines):
-        """ 地雷マップ(self->mine_map)の初期化
-        Arguments:
-        number_of_mines -- 地雷の数
 
-        地雷セルに-1を設定する．
-        """
+        #ダミーのbitimgを作成 全て塗りつぶす図
+        self.bit_img = \
+            [[1 for _ in range(MS_SIZE-1)] for _ in range(MS_SIZE-1)]
+
+        #ダミーのbit_counter_sideを作成
+        self.bit_counter_side = []
+        dummy_list = [0]
+        for i in range(MS_SIZE-1):
+            dummy_list.append(self.bit_counter_side)
+
+
+        #ダミーのbit_counter_upを作成
+        self.bit_counter_up = []
+        dummy_list = [0]
+        for i in range(MS_SIZE-1):
+            dummy_list.append(self.bit_counter_up)
 
         # <-- (STEP 2) ここにコードを追加
-        self.mine_map = \
-            [[0 for _ in range(MS_SIZE)] for _ in range(MS_SIZE)]
+        # self.mine_map = \
+        #     [[0 for _ in range(MS_SIZE)] for _ in range(MS_SIZE)]
 
-        if number_of_mines < 0:
-            return
+        # if number_of_mines < 0:
+        #     return
 
-        random_table = []
-        for i in range(MS_SIZE):
-            for j in range(MS_SIZE):
-                random_table.append([random.random(), i, j])
+        # random_table = []
+        # for i in range(MS_SIZE):
+        #     for j in range(MS_SIZE):
+        #         random_table.append([random.random(), i, j])
 
-        random_table = sorted(random_table, key=lambda mine: mine[0])
+        # random_table = sorted(random_table, key=lambda mine: mine[0])
 
-        for i in range(
-                number_of_mines
-                if number_of_mines <= MS_SIZE * MS_SIZE
-                else MS_SIZE * MS_SIZE):
-            a_x = random_table[i][1]
-            a_y = random_table[i][2]
-            self.mine_map[a_y][a_x] = -1
+        # for i in range(
+        #         number_of_mines
+        #         if number_of_mines <= MS_SIZE * MS_SIZE
+        #         else MS_SIZE * MS_SIZE):
+        #     a_x = random_table[i][1]
+        #     a_y = random_table[i][2]
+        #     self.mine_map[a_y][a_x] = -1
 
     def count_mines(self):
         """ 8近傍の地雷数をカウントしmine_mapに格納
@@ -115,32 +125,15 @@ class Game:
                    地雷セル，FLAGが設定されたセルは開けない．
           False -- 地雷があるセルを開けてしまった場合（ゲームオーバ）
         """
-        # <-- (STEP 4) ここにコードを追加
-        if self.mine_map[y][x] == -1:
-            return False
-        if self.game_board[y][x] == OPEN:
+        print(self.bit_img)
+        if self.bit_img[y][x] == 1:
+            self.game_board[y][x] = OPEN
+            print("True")
             return True
-        self.game_board[y][x] = OPEN
+        elif self.bit_img[y][x] == 0:
+            print("False")
+            return False
 
-        def search(i: int, j: int) -> None:
-            """指定されたセルを開く
-            Arguments:
-                i, j (int):
-            Returns:
-                None
-            """
-            if (0 <= i < MS_SIZE > j >= 0 and
-                    self.game_board[i][j] != FLAG and
-                    self.mine_map[i][j] != -1):
-                self.game_board[i][j] = OPEN
-
-        for d_y in range(-1, 2):
-            for d_x in range(-1, 2):
-                if d_y == d_x == 0:
-                    continue
-                search(y + d_y, x + d_x)
-
-        return True
 
     def flag_cell(self, x, y):
         """
@@ -206,25 +199,29 @@ class MyPushButton(QPushButton):
     def on_click(self):
         """ セルをクリックしたときの動作 """
         # *以下，コードを追加*
+        print("on_click")
         modifiers = QApplication.keyboardModifiers()
 
-        if modifiers == Qt.ShiftModifier:
-            # フラグを立てる
+        if modifiers == Qt.ShiftModifier:# フラグを立てる
+
             print(self.x, self.y)
             self.parent.game.flag_cell(self.x, self.y)
-        elif self.parent.game.game_board[self.y][self.x] == CLOSE:
+
+        elif self.parent.game.game_board[self.y][self.x] == CLOSE:#セルを開く
+
             if not self.parent.game.open_cell(self.x, self.y):
                 # 地雷があるセルを開けてしまった場合
                 QMessageBox.information(self.parent, "Game Over", "ゲームオーバー!")
+                print("game over")
                 self.parent.close()
 
         # セルの状態を表示
         self.parent.show_cell_status()
 
-        # ゲームが終了しているかの確認
-        if self.parent.game.is_finished():
-            QMessageBox.information(self.parent, "Game Clear", "ゲームクリア!")
-            self.parent.close()
+        "ゲームが終了しているかの確認"
+        # if self.parent.game.is_finished():
+        #     QMessageBox.information(self.parent, "Game Clear", "ゲームクリア!")
+        #     self.parent.close()
 
 
 class MinesweeperWindow(QMainWindow):
@@ -291,18 +288,34 @@ class MinesweeperWindow(QMainWindow):
         """ ゲームボードを表示 """
         # ★以下，コードを追加★
         print("show-cell")
-        for y, game_line in enumerate(self.game.game_board):
-            for x, game_cell in enumerate(game_line):
-                if game_cell == CLOSE:
-                    self.buttons[y][x].setText("x")
-                    self.buttons[y][x].set_bg_color("gray")
-                elif game_cell == OPEN:
-                    text = str(self.game.mine_map[y][x])
-                    self.buttons[y][x].setText(text)
-                    self.buttons[y][x].set_bg_color("blue")
-                else:
-                    self.buttons[y][x].setText("P")
-                    self.buttons[y][x].set_bg_color("yellow")
+        def do_button(index_x, index_y, color, text):
+            self.buttons[index_y][index_x].setText(text)
+            self.buttons[index_y][index_x].set_bg_color(color)
+
+        def gen_string(nums):
+            return ' '.join(list(map(str, nums)))
+
+        for x in range(1, MS_SIZE):
+            do_button(x, 0, "green", gen_string(self.game.bit_counter_up[x-1]))
+        for y in range(1, MS_SIZE):
+            do_button(0, y, "green", gen_string(self.game.bit_counter_side[y-1]))
+
+        for y in range(1, MS_SIZE):
+            for x in range(1, MS_SIZE):
+                if self.game.game_board[y-1][x-1] == 1:
+                    do_button(x, y, "black", "o")
+        # for y, game_line in enumerate(self.game.game_board):
+        #     for x, game_cell in enumerate(game_line):
+        #         if game_cell == CLOSE:
+        #             self.buttons[y][x].setText("x")
+        #             self.buttons[y][x].set_bg_color("gray")
+        #         elif game_cell == OPEN:
+        #             text = str(self.game.bit_img[y][x])
+        #             self.buttons[y][x].setText(text)
+        #             self.buttons[y][x].set_bg_color("blue")
+        #         else:
+        #             self.buttons[y][x].setText("P")
+        #             self.buttons[y][x].set_bg_color("yellow")
 
     def setImage(self):
         """ 画像を取得して表示 """
@@ -315,11 +328,15 @@ class MinesweeperWindow(QMainWindow):
         if cv_img is None:
             return
 
-        bit_img = image_processer.makeillust_size(cv_img, MS_SIZE-1, MS_SIZE-1)
-        bit_counter_side = image_processer.count(bit_img)
-        bit_counter_up = image_processer.count(bit_img.T)
-        print("side: ", bit_counter_side)
-        print("up: ", bit_counter_up)
+        self.game.bit_img = image_processer.makeillust_size(cv_img, MS_SIZE-1, MS_SIZE-1)
+
+
+        print(self.game.bit_img)
+
+        self.game.bit_counter_side = image_processer.count(self.game.bit_img)
+        self.game.bit_counter_up = image_processer.count(self.game.bit_img.T)
+        #print("side: ", self.game.bit_counter_side)
+        #print("up: ", self.game.bit_counter_up)
 
         def do_button(index_x, index_y, color, text):
             self.buttons[index_y][index_x].setText(text)
@@ -329,14 +346,16 @@ class MinesweeperWindow(QMainWindow):
             return ' '.join(list(map(str, nums)))
 
         for x in range(1, MS_SIZE):
-            do_button(x, 0, "green", gen_string(bit_counter_up[x-1]))
+            do_button(x, 0, "green", gen_string(self.game.bit_counter_up[x-1]))
         for y in range(1, MS_SIZE):
-            do_button(0, y, "green", gen_string(bit_counter_side[y-1]))
+            do_button(0, y, "green", gen_string(self.game.bit_counter_side[y-1]))
 
         for y in range(1, MS_SIZE):
             for x in range(1, MS_SIZE):
-                if bit_img[y-1][x-1] == 1:
+                if self.game.game_board[y-1][x-1] == 1:
                     do_button(x, y, "black", "o")
+
+        print("setImage end")
 
 
 def main():
