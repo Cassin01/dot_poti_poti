@@ -124,6 +124,8 @@ class MyPushButton(QPushButton):
         modifiers = QApplication.keyboardModifiers()
         x = self.x-self.parent.game.max_bit_counter
         y = self.y-self.parent.game.max_bit_counter
+        if x < 0 or y < 0:
+            return
 
         if modifiers == Qt.ShiftModifier:# フラグを立てる
 
