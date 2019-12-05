@@ -29,7 +29,7 @@ class Game:
     def init_make_game_board(self):
         """ ゲーム盤を初期化 """
         "最初に表示するゲーム盤を作成する"
-        #塗り絵をする部分　全てCLOSE 大きさは (MS_SIZE-1)
+        #塗り絵をする部分全てCLOSE 大きさは (MS_SIZE-1)
         self.game_board = \
             [[CLOSE for _ in range(MS_SIZE-1)] for _ in range(MS_SIZE-1)]
 
@@ -44,34 +44,11 @@ class Game:
         for i in range(MS_SIZE-1):
             dummy_list.append(self.bit_counter_side)
 
-
         #ダミーのbit_counter_upを作成
         self.bit_counter_up = []
         dummy_list = [0]
         for i in range(MS_SIZE-1):
             dummy_list.append(self.bit_counter_up)
-
-        # <-- (STEP 2) ここにコードを追加
-        # self.mine_map = \
-        #     [[0 for _ in range(MS_SIZE)] for _ in range(MS_SIZE)]
-
-        # if number_of_mines < 0:
-        #     return
-
-        # random_table = []
-        # for i in range(MS_SIZE):
-        #     for j in range(MS_SIZE):
-        #         random_table.append([random.random(), i, j])
-
-        # random_table = sorted(random_table, key=lambda mine: mine[0])
-
-        # for i in range(
-        #         number_of_mines
-        #         if number_of_mines <= MS_SIZE * MS_SIZE
-        #         else MS_SIZE * MS_SIZE):
-        #     a_x = random_table[i][1]
-        #     a_y = random_table[i][2]
-        #     self.mine_map[a_y][a_x] = -1
 
     def count_mines(self):
         """ 8近傍の地雷数をカウントしmine_mapに格納
@@ -149,31 +126,17 @@ class Game:
             self.game_board[y][x] = FLAG
 
     def is_finished(self):
-        """地雷セル以外のすべてのセルが開かれたかチェック
+        """セルが全て開かれたかチェック
         """
-        # <-- (STEP 6) ここにコードを追加
-        for i in range(MS_SIZE):
-            for j in range(MS_SIZE):
-                if (self.game_board[i][j] == OPEN or
-                        (self.game_board[i][j] != OPEN and
-                         self.mine_map[i][j] == -1)):
-                    continue
-                return False
+        # 全てのボードを開いていたらTrueを返す．まだならFalse.
+        #bit_img = 1 and game_board != open ならば まだ完了していない.
+
+        for i in range(1,MS_SIZE-1):
+            for j in range(1,MS_SIZE-1):
+                if self.bit_img[i][j] == 1 and self.game_board[i][j] != OPEN:
+                    return False
         return True
 
-    def print_game_board(self):
-        marks = ['x', ' ', 'P']
-        self.print_header()
-        print("[y]")
-        for y in range(MS_SIZE):
-            print("%2d|" % y, end="")
-            for x in range(MS_SIZE):
-                if self.game_board[y][x] == OPEN and self.mine_map[y][x] > 0:
-                    print("%3d" % self.mine_map[y][x], end="")
-                else:
-                    print("%3s" % marks[self.game_board[y][x]], end="")
-            print("")
-        self.print_footer()
 
 
 class MyPushButton(QPushButton):
@@ -219,9 +182,9 @@ class MyPushButton(QPushButton):
         self.parent.show_cell_status()
 
         "ゲームが終了しているかの確認"
-        # if self.parent.game.is_finished():
-        #     QMessageBox.information(self.parent, "Game Clear", "ゲームクリア!")
-        #     self.parent.close()
+        if self.parent.game.is_finished():
+            QMessageBox.information(self.parent, "Game Clear", "ゲームクリア!")
+            self.parent.close()
 
 
 class MinesweeperWindow(QMainWindow):
@@ -329,7 +292,6 @@ class MinesweeperWindow(QMainWindow):
             return
 
         self.game.bit_img = image_processer.makeillust_size(cv_img, MS_SIZE-1, MS_SIZE-1)
-
 
         print(self.game.bit_img)
 
