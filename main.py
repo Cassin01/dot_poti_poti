@@ -25,7 +25,6 @@ class Game:
         """
 
         self.init_make_game_board()
-        #self.count_mines()
 
     def init_make_game_board(self):
         """ ゲーム盤を初期化 """
@@ -35,15 +34,13 @@ class Game:
         # 正実のgame_boardのサイズ
         self.raw_size = MS_SIZE - self.max_bit_counter
 
-        #塗り絵をする部分全てCLOSE 大きさは (MS_SIZE-1)
+        # 塗り絵をする部分全てCLOSE 大きさは (MS_SIZE-1)
         self.game_board = \
             [[CLOSE for _ in range(self.raw_size)] for _ in range(self.raw_size)]
 
-
-        #ダミーのbitimgを作成 全て塗りつぶす図
+        # ダミーのbit_imgを作成 全て塗りつぶす図
         self.bit_img = \
             [[1 for _ in range(self.raw_size)] for _ in range(self.raw_size)]
-
 
     def open_cell(self, x, y):
         """セル(x, y)を開ける
@@ -65,7 +62,6 @@ class Game:
             print("False")
             return False
 
-
     def flag_cell(self, x, y):
         """
         セル(x, y)にフラグを設定する，既に設定されている場合はCLOSE状態にする
@@ -83,12 +79,8 @@ class Game:
         """セルが全て開かれたかチェック
         """
         # 全てのボードを開いていたらTrueを返す．まだならFalse.
-        #bit_img = 1 and game_board != open ならば まだ完了していない.
+        # bit_img = 1 and game_board != open ならば まだ完了していない.
 
-        #for i in range(1,MS_SIZE-1):
-        #    for j in range(1,MS_SIZE-1):
-        #        if self.bit_img[i][j] == 1 and self.game_board[i][j] != OPEN:
-        #            return False
         for i in range(self.max_bit_counter, MS_SIZE):
             for j in range(self.max_bit_counter, MS_SIZE):
                 if self.bit_img[i][j] == 1 and self.game_board[i][j] != OPEN:
@@ -96,9 +88,7 @@ class Game:
         return True
 
 
-
 class MyPushButton(QPushButton):
-
     def __init__(self, text, x, y, parent):
         """ セルに対応するボタンを生成 """
         super(MyPushButton, self).__init__(text, parent)
@@ -163,7 +153,7 @@ class MinesweeperWindow(QMainWindow):
         self.resize(w, h)
         self.setWindowTitle('Minesweeper')
 
-        # ★以下，コードを追加★
+        # 以下，コードを追加
         # ボタンの追加 {{{
 
         def gen_button(index_x, index_y, color):
@@ -173,7 +163,7 @@ class MinesweeperWindow(QMainWindow):
             return my_push_button
 
         self.buttons = \
-            [[gen_button(x, y, "gray") for x in range(MS_SIZE)] for y in range(MS_SIZE)]
+            [[gen_button(x, y, "white") for x in range(MS_SIZE)] for y in range(MS_SIZE)]
 
         v_box = QVBoxLayout()
         v_box.setSpacing(0)
@@ -208,6 +198,7 @@ class MinesweeperWindow(QMainWindow):
         # }}}
 
         self.show()
+        self.setImage()
 
     def show_cell_status(self):
         """ ゲームボードを表示 """
@@ -230,23 +221,9 @@ class MinesweeperWindow(QMainWindow):
             for x in range(self.game.max_bit_counter, MS_SIZE):
                 if self.game.game_board[y-self.game.max_bit_counter][x-self.game.max_bit_counter] == 1:
                     self.buttons[y][x].set_bg_color("black")
+                else:
+                    self.buttons[y][x].set_bg_color("gray")
 
-        # def do_button(index_x, index_y, color, text):
-        #     self.buttons[index_y][index_x].setText(text)
-        #     self.buttons[index_y][index_x].set_bg_color(color)
-
-        # def gen_string(nums):
-        #     return ' '.join(list(map(str, nums)))
-
-        # for x in range(1, MS_SIZE):
-        #     do_button(x, 0, "green", gen_string(self.game.bit_counter_up[x-1]))
-        # for y in range(1, MS_SIZE):
-        #     do_button(0, y, "green", gen_string(self.game.bit_counter_side[y-1]))
-
-        # for y in range(1, MS_SIZE):
-        #     for x in range(1, MS_SIZE):
-        #         if self.game.game_board[y-1][x-1] == 1:
-        #             do_button(x, y, "black", "o")
 
     def setImage(self):
         """ 画像を取得して表示 """
@@ -267,23 +244,6 @@ class MinesweeperWindow(QMainWindow):
         self.game.bit_counter_up = image_processer.count(self.game.bit_img.T)
 
         self.show_cell_status()
-
-        # def do_button(index_x, index_y, color, text):
-        #     self.buttons[index_y][index_x].setText(text)
-        #     self.buttons[index_y][index_x].set_bg_color(color)
-
-        # def gen_string(nums):
-        #     return ' '.join(list(map(str, nums)))
-
-        # for x in range(1, MS_SIZE):
-        #     do_button(x, 0, "green", gen_string(self.game.bit_counter_up[x-1]))
-        # for y in range(1, MS_SIZE):
-        #     do_button(0, y, "green", gen_string(self.game.bit_counter_side[y-1]))
-
-        # for y in range(1, MS_SIZE):
-        #     for x in range(1, MS_SIZE):
-        #         if self.game.game_board[y-1][x-1] == 1:
-        #             do_button(x, y, "black", "o")
 
         print("setImage end")
 
