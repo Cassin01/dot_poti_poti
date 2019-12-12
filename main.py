@@ -9,7 +9,7 @@ import numpy as np
 from mods import image_processer
 import math
 
-MS_SIZE = 50 # ゲームボードのサイズ
+MS_SIZE = 30 # ゲームボードのサイズ
 CLOSE, OPEN, FLAG = 0, 1, 2
 
 
@@ -126,8 +126,8 @@ class MyPushButton(QPushButton):
             if not self.parent.game.open_cell(x, y):
                 # 地雷があるセルを開けてしまった場合
                 QMessageBox.information(self.parent, "Game Over", "ゲームオーバー!")
-                print("game over")
-                self.parent.close()
+                print("ここは違います")
+                # self.parent.close()
 
         # セルの状態を表示
         self.parent.show_cell_status()
@@ -220,6 +220,9 @@ class MinesweeperWindow(QMainWindow):
             for x in range(self.game.max_bit_counter, MS_SIZE):
                 if self.game.game_board[y-self.game.max_bit_counter][x-self.game.max_bit_counter] == 1:
                     self.buttons[y][x].set_bg_color("black")
+                elif self.game.game_board[y - self.game.max_bit_counter][x - self.game.max_bit_counter] == FLAG:
+                    self.buttons[y][x].setText("X")
+                    self.buttons[y][x].set_bg_color("blue")
                 else:
                     self.buttons[y][x].set_bg_color("gray")
 
