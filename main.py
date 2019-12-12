@@ -9,7 +9,7 @@ import numpy as np
 from mods import image_processer
 import math
 
-MS_SIZE = 30  # ゲームボードのサイズ
+MS_SIZE = 50 # ゲームボードのサイズ
 CLOSE, OPEN, FLAG = 0, 1, 2
 
 
