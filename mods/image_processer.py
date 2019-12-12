@@ -39,11 +39,14 @@ def makeillust(img):
     return img_re_d
 
 def makeillust_size(img, width, height):
-    img_resize = cv2.resize(img, (width, height))
     img_gray = cv2.cvtColor(img_resize, cv2.COLOR_BGR2GRAY)
+    kernel = np.ones((10,10),np.uint8)
+    gradient = cv2.morphologyEx(img_gray, cv2.MORPH_GRADIENT, kernel)
 
     # ret, illust_map = cv2.threshold(img_gray, compute_mean(img_gray, width, height), 1, cv2.THRESH_BINARY) # 平均値を閾値として閾値処理(うまくいかない)
-    ret, illust_map = cv2.threshold(img_gray, 127, 1, cv2.THRESH_BINARY) # 127を閾値として閾値処理
+    ret, illust_map = cv2.threshold(gradient, 127, 1, cv2.THRESH_BINARY) # 127を閾値として閾値処理
+    dilation = cv2.dilate(illust_map,kernel,iterations = 1) #膨張
+    img_resize = cv2.resize(img, (width, height))
     return illust_map
 
 # 平均値の計算
