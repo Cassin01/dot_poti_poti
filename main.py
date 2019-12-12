@@ -75,17 +75,22 @@ class Game:
             self.game_board[y][x] = FLAG
 
     def is_finished(self):
+        print(self.max_bit_counter)
+        print(MS_SIZE)
+        print(len(self.bit_img))
+        print(len(self.game_board))
         """セルが全て開かれたかチェック
         """
         # 全てのボードを開いていたらTrueを返す．まだならFalse.
         # bit_img = 1 and game_board != open ならば まだ完了していない.
 
-        for i in range(self.max_bit_counter, MS_SIZE):
-            for j in range(self.max_bit_counter, MS_SIZE):
+        # for i in range(self.max_bit_counter, MS_SIZE-1):
+        #     for j in range(self.max_bit_counter, MS_SIZE-1):
+        for i in range(self.raw_size):
+            for j in range(self.raw_size):
                 if self.bit_img[i][j] == 1 and self.game_board[i][j] != OPEN:
                     return False
         return True
-
 
 class MyPushButton(QPushButton):
     def __init__(self, text, x, y, parent):
@@ -125,7 +130,7 @@ class MyPushButton(QPushButton):
 
             if not self.parent.game.open_cell(x, y):
                 # 地雷があるセルを開けてしまった場合
-                QMessageBox.information(self.parent, "Game Over", "ゲームオーバー!")
+                # QMessageBox.information(self.parent, "Game Over", "ゲームオーバー!")
                 print("ここは違います")
                 # self.parent.close()
 
