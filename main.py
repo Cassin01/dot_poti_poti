@@ -27,8 +27,7 @@ class Game:
         self.init_make_game_board()
 
     def init_make_game_board(self):
-        """ ゲーム盤を初期化 """
-        "最初に表示するゲーム盤を作成する"
+        """ ゲーム盤を初期化 """ "最初に表示するゲーム盤を作成する"
         self.max_bit_counter = math.ceil(MS_SIZE/3)
 
         # 正実のgame_boardのサイズ
@@ -236,7 +235,7 @@ class MinesweeperWindow(QMainWindow):
         if cv_img is None:
             return
 
-        self.game.bit_img = image_processer.makeillust_size(cv_img, MS_SIZE-1, MS_SIZE-1)
+        self.game.bit_img = image_processer.makeillust_size(cv_img, self.game.raw_size, self.game.raw_size)
 
         print(self.game.bit_img)
 
