@@ -24,7 +24,7 @@ def count(illust_map):
                 count += 1
         if len(countlist) == 0:
             countlist.append(0)
-        num.append(countlist)
+        num.append(countlist[::-1])
     return num
 
 # def makeillust(img):
