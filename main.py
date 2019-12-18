@@ -9,7 +9,8 @@ import numpy as np
 from mods import image_processer
 import math
 
-MS_SIZE = 30 # ゲームボードのサイズ
+# ゲームボードのサイズ
+MS_SIZE = 40
 CLOSE, OPEN, FLAG = 0, 1, 2
 
 
@@ -28,9 +29,9 @@ class Game:
 
     def init_make_game_board(self):
         """ ゲーム盤を初期化 """ "最初に表示するゲーム盤を作成する"
-        self.max_bit_counter = math.ceil(MS_SIZE/3)
+        self.max_bit_counter = math.ceil(MS_SIZE/5)
 
-        # 正実のgame_boardのサイズ
+        # 正味のgame_boardのサイズ
         self.raw_size = MS_SIZE - self.max_bit_counter
 
         # 塗り絵をする部分全てCLOSE 大きさは (MS_SIZE-1)
@@ -83,14 +84,12 @@ class Game:
         """
         # 全てのボードを開いていたらTrueを返す．まだならFalse.
         # bit_img = 1 and game_board != open ならば まだ完了していない.
-
-        # for i in range(self.max_bit_counter, MS_SIZE-1):
-        #     for j in range(self.max_bit_counter, MS_SIZE-1):
         for i in range(self.raw_size):
             for j in range(self.raw_size):
                 if self.bit_img[i][j] == 1 and self.game_board[i][j] != OPEN:
                     return False
         return True
+
 
 class MyPushButton(QPushButton):
     def __init__(self, text, x, y, parent):
@@ -99,7 +98,7 @@ class MyPushButton(QPushButton):
         self.parent = parent
         self.x = x
         self.y = y
-        self.setMinimumSize(25, 25)
+        self.setMinimumSize(20, 20)
         self.setSizePolicy(QSizePolicy.MinimumExpanding,
                            QSizePolicy.MinimumExpanding)
 
@@ -116,17 +115,19 @@ class MyPushButton(QPushButton):
         # *以下，コードを追加*
         print("on_click")
         modifiers = QApplication.keyboardModifiers()
-        x = self.x-self.parent.game.max_bit_counter
-        y = self.y-self.parent.game.max_bit_counter
+        x = self.x - self.parent.game.max_bit_counter
+        y = self.y - self.parent.game.max_bit_counter
         if x < 0 or y < 0:
             return
 
-        if modifiers == Qt.ShiftModifier:# フラグを立てる
+        # フラグを立てる
+        if modifiers == Qt.ShiftModifier:
 
             # print(self.x, self.y)
             self.parent.game.flag_cell(x, y)
 
-        elif self.parent.game.game_board[y][x] == CLOSE:#セルを開く
+        # セルを開く
+        elif self.parent.game.game_board[y][x] == CLOSE:
 
             if not self.parent.game.open_cell(x, y):
                 # 地雷があるセルを開けてしまった場合
@@ -153,13 +154,12 @@ class MinesweeperWindow(QMainWindow):
     def initUI(self):
         """ UIの初期化 """
         w = 900
-        h = 600
+        h = 900
         self.resize(w, h)
         self.setWindowTitle('Minesweeper')
 
         # 以下，コードを追加
         # ボタンの追加 {{{
-
         def gen_button(index_x, index_y, color):
             my_push_button = MyPushButton(' ', index_x, index_y, self)
             my_push_button.set_bg_color(color)
@@ -181,11 +181,9 @@ class MinesweeperWindow(QMainWindow):
         container.setLayout(v_box)
 
         self.setCentralWidget(container)
-
         # }}}
 
         # メニューの追加 {{{
-
         # (1) ニュー項目[File]-[Select]が選択されたときのアクションを生成
         selectAction = QAction('&Select', self)
 
@@ -198,7 +196,6 @@ class MinesweeperWindow(QMainWindow):
         # (4) メニューバーに[File]メニューを追加し，そのアクションとしてselectActionを登録
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(selectAction)
-
         # }}}
 
         self.show()
@@ -226,7 +223,7 @@ class MinesweeperWindow(QMainWindow):
                 if self.game.game_board[y-self.game.max_bit_counter][x-self.game.max_bit_counter] == 1:
                     self.buttons[y][x].set_bg_color("black")
                 elif self.game.game_board[y - self.game.max_bit_counter][x - self.game.max_bit_counter] == FLAG:
-                    self.buttons[y][x].setText("X")
+                    # self.buttons[y][x].setText("X")
                     self.buttons[y][x].set_bg_color("blue")
                 else:
                     self.buttons[y][x].set_bg_color("gray")
@@ -238,7 +235,8 @@ class MinesweeperWindow(QMainWindow):
         # 画像を選択してファイル名を取得
         file_name = QFileDialog.getOpenFileName(self, 'Open file', './')
 
-        n = np.fromfile(file_name[0], dtype=np.uint8)  # imreadだと日本語のファイル名に対応できないため，np.fromfileとcv2.imdecodeを使う
+        # imreadだと日本語のファイル名に対応できないため，np.fromfileとcv2.imdecodeを使う
+        n = np.fromfile(file_name[0], dtype=np.uint8)
         cv_img = cv2.imdecode(n, cv2.IMREAD_COLOR)
         if cv_img is None:
             return
