@@ -31,6 +31,7 @@ def makeillust_size(img, width, height):
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     kernel = np.ones((10,10),np.uint8)
     gradient = cv2.morphologyEx(img_gray, cv2.MORPH_GRADIENT, kernel)
+    gradient = 255 - gradient
 
     # 127を閾値として閾値処理
     ret, illust_map = cv2.threshold(gradient, 127, 1, cv2.THRESH_BINARY)
