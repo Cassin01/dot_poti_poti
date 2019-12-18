@@ -53,13 +53,10 @@ class Game:
                    地雷セル，FLAGが設定されたセルは開けない．
           False -- 地雷があるセルを開けてしまった場合（ゲームオーバ）
         """
-        print(self.bit_img)
         if self.bit_img[y][x] == 1:
             self.game_board[y][x] = OPEN
-            print("True")
             return True
         elif self.bit_img[y][x] == 0:
-            print("False")
             return False
 
     def flag_cell(self, x, y):
@@ -75,10 +72,6 @@ class Game:
             self.game_board[y][x] = FLAG
 
     def is_finished(self):
-        print(self.max_bit_counter)
-        print(MS_SIZE)
-        print(len(self.bit_img))
-        print(len(self.game_board))
         """セルが全て開かれたかチェック
         """
         # 全てのボードを開いていたらTrueを返す．まだならFalse.
@@ -121,7 +114,6 @@ class MyPushButton(QPushButton):
         # フラグを立てる
         if modifiers == Qt.ShiftModifier:
 
-            # print(self.x, self.y)
             self.parent.game.flag_cell(x, y)
 
         # セルを開く
@@ -237,8 +229,6 @@ class MinesweeperWindow(QMainWindow):
             return
 
         self.game.bit_img = image_processer.makeillust_size(cv_img, self.game.raw_size, self.game.raw_size)
-
-        print(self.game.bit_img)
 
         self.game.bit_counter_side = image_processer.count(self.game.bit_img)
         self.game.bit_counter_up = image_processer.count(self.game.bit_img.T)
