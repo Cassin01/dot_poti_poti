@@ -66,7 +66,6 @@ class Game:
         """
         セル(x, y)にフラグを設定する，既に設定されている場合はCLOSE状態にする
         """
-        # <-- (STEP 5) ここにコードを追加
         if self.game_board[y][x] == OPEN:
             return
 
@@ -112,7 +111,6 @@ class MyPushButton(QPushButton):
 
     def on_click(self):
         """ セルをクリックしたときの動作 """
-        # *以下，コードを追加*
         print("on_click")
         modifiers = QApplication.keyboardModifiers()
         x = self.x - self.parent.game.max_bit_counter
@@ -138,7 +136,7 @@ class MyPushButton(QPushButton):
         # セルの状態を表示
         self.parent.show_cell_status()
 
-        "ゲームが終了しているかの確認"
+        # ゲームが終了しているかの確認
         if self.parent.game.is_finished():
             QMessageBox.information(self.parent, "Game Clear", "ゲームクリア!")
             self.parent.close()
@@ -158,7 +156,6 @@ class MinesweeperWindow(QMainWindow):
         self.resize(w, h)
         self.setWindowTitle('Minesweeper')
 
-        # 以下，コードを追加
         # ボタンの追加 {{{
         def gen_button(index_x, index_y, color):
             my_push_button = MyPushButton(' ', index_x, index_y, self)
@@ -203,27 +200,25 @@ class MinesweeperWindow(QMainWindow):
 
     def show_cell_status(self):
         """ ゲームボードを表示 """
-        # ★以下，コードを追加★
         print("show-cell")
 
-        def do_button(index_x, index_y, color: str, text: str):
+        def update_button(index_x, index_y, color: str, text: str):
             self.buttons[index_y][index_x].setText(text)
             self.buttons[index_y][index_x].set_bg_color(color)
 
         for x in range(self.game.max_bit_counter, MS_SIZE):
             for y, cnt in enumerate(self.game.bit_counter_up[x-self.game.max_bit_counter]):
-                do_button(x, self.game.max_bit_counter-1-y, "green", str(cnt))
+                update_button(x, self.game.max_bit_counter-1-y, "green", str(cnt))
 
         for y in range(self.game.max_bit_counter, MS_SIZE):
             for x, cnt in enumerate(self.game.bit_counter_side[y-self.game.max_bit_counter]):
-                do_button(self.game.max_bit_counter-1-x, y,  "green", str(cnt))
+                update_button(self.game.max_bit_counter-1-x, y,  "green", str(cnt))
 
         for y in range(self.game.max_bit_counter, MS_SIZE):
             for x in range(self.game.max_bit_counter, MS_SIZE):
                 if self.game.game_board[y-self.game.max_bit_counter][x-self.game.max_bit_counter] == 1:
                     self.buttons[y][x].set_bg_color("black")
                 elif self.game.game_board[y - self.game.max_bit_counter][x - self.game.max_bit_counter] == FLAG:
-                    # self.buttons[y][x].setText("X")
                     self.buttons[y][x].set_bg_color("blue")
                 else:
                     self.buttons[y][x].set_bg_color("gray")
