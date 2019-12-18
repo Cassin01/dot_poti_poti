@@ -1,8 +1,6 @@
 import sys
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-import random
 
 import cv2
 import numpy as np
