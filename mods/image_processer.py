@@ -17,9 +17,9 @@ def count(illust_map):
                 count = 0
             else:
                 count += 1
-        if len(countlist) == 0:
-            countlist.append(0)
+        countlist.append(count)
         num.append(countlist[::-1])
+        count = 0
     return num
 
 def makeillust_size(img, width, height):
@@ -34,6 +34,7 @@ def makeillust_size(img, width, height):
     # 膨張
     dilation = cv2.dilate(illust_map,kernel,iterations = 1)
     img_resize = cv2.resize(dilation, (width, height))
+    img_resize = 1 - img_resize
     return img_resize
 
 
