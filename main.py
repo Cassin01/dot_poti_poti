@@ -154,7 +154,7 @@ class MinesweeperWindow(QMainWindow):
             return my_push_button
 
         self.buttons = \
-            [[gen_button(x, y, "white") for x in range(MS_SIZE)] for y in range(MS_SIZE)]
+            [[gen_button(x, y, "#111111") for x in range(MS_SIZE)] for y in range(MS_SIZE)]
 
         v_box = QVBoxLayout()
         v_box.setSpacing(0)
@@ -171,16 +171,16 @@ class MinesweeperWindow(QMainWindow):
         # }}}
 
         # メニューの追加 {{{
-        # (1) ニュー項目[File]-[Select]が選択されたときのアクションを生成
+        # ニュー項目[File]-[Select]が選択されたときのアクションを生成
         selectAction = QAction('&Select', self)
 
-        # (2) メニュー項目が選択されたときの処理として，MyViewクラスのsetImageメソッドを設定
+        # メニュー項目が選択されたときの処理として，MyViewクラスのsetImageメソッドを設定
         selectAction.triggered.connect(self.setImage)
 
-        # (3) メインウィンドウのメニューバーオブジェクトを取得
+        # メインウィンドウのメニューバーオブジェクトを取得
         menubar = self.menuBar()
 
-        # (4) メニューバーに[File]メニューを追加し，そのアクションとしてselectActionを登録
+        # メニューバーに[File]メニューを追加し，そのアクションとしてselectActionを登録
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(selectAction)
         # }}}
@@ -198,20 +198,25 @@ class MinesweeperWindow(QMainWindow):
 
         for x in range(self.game.max_bit_counter, MS_SIZE):
             for y, cnt in enumerate(self.game.bit_counter_up[x-self.game.max_bit_counter]):
-                update_button(x, self.game.max_bit_counter-1-y, "green", str(cnt))
+                # green
+                update_button(x, self.game.max_bit_counter-1-y, "#00796B", str(cnt))
 
         for y in range(self.game.max_bit_counter, MS_SIZE):
             for x, cnt in enumerate(self.game.bit_counter_side[y-self.game.max_bit_counter]):
-                update_button(self.game.max_bit_counter-1-x, y,  "green", str(cnt))
+                # green
+                update_button(self.game.max_bit_counter-1-x, y,  "#00796B", str(cnt))
 
         for y in range(self.game.max_bit_counter, MS_SIZE):
             for x in range(self.game.max_bit_counter, MS_SIZE):
                 if self.game.game_board[y-self.game.max_bit_counter][x-self.game.max_bit_counter] == 1:
-                    self.buttons[y][x].set_bg_color("black")
+                    # black
+                    self.buttons[y][x].set_bg_color("#607D8B")
                 elif self.game.game_board[y - self.game.max_bit_counter][x - self.game.max_bit_counter] == FLAG:
-                    self.buttons[y][x].set_bg_color("blue")
+                    # blue
+                    self.buttons[y][x].set_bg_color("#B2DFDB")
                 else:
-                    self.buttons[y][x].set_bg_color("gray")
+                    # gray
+                    self.buttons[y][x].set_bg_color("#BDBDBD")
 
 
     def setImage(self):
